@@ -137,7 +137,7 @@ This starter kit is configured for use with shadcn/ui components. To add a compo
 
 1. Use the shadcn/ui CLI (recommended to install it globally):
    ```bash
-   npm install -g shadcn-ui@latest
+   pnpm install -g shadcn-ui@latest
    ```
 
 2. Add components to your project:
