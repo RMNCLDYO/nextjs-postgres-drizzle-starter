@@ -1,10 +1,8 @@
 import 'dotenv/config';
-import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { Client } from 'pg';
+import { usersTable } from './schema';
 
 async function backupDatabase() {
   console.log('Starting database backup...');
@@ -20,25 +18,38 @@ async function backupDatabase() {
     // Format current date for filename
     const now = new Date();
     const dateString = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').split('Z')[0];
-    const backupFileName = `backup_${dateString}.sql`;
+    const backupFileName = `backup_${dateString}.json`;
     const backupPath = path.join(backupDir, backupFileName);
     
-    // Parse the DATABASE_URL
-    const databaseUrl = new URL(process.env.DATABASE_URL!);
-    const host = databaseUrl.hostname;
-    const port = databaseUrl.port || '5432';
-    const database = databaseUrl.pathname.substring(1); // Remove leading '/'
-    const username = databaseUrl.username;
-    const password = databaseUrl.password;
+    // Set SSL options based on environment
+    const sslConfig = process.env.NODE_ENV === 'development' 
+      ? { rejectUnauthorized: false } // Development mode: accept self-signed certs
+      : true; // Production mode: require valid certificates
     
-    // Set environment variables for pg_dump
-    const env = { ...process.env, PGPASSWORD: password };
+    // Connect to the database
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL!,
+      ssl: sslConfig
+    });
     
-    // Build pg_dump command
-    const command = `pg_dump -h ${host} -p ${port} -U ${username} -d ${database} -F p > "${backupPath}"`;
+    await client.connect();
     
-    // Execute pg_dump
-    await execAsync(command, { env });
+    // Query all tables you want to back up
+    const usersResult = await client.query('SELECT * FROM users');
+    
+    // Create a backup object with all data
+    const backupData = {
+      timestamp: now.toISOString(),
+      tables: {
+        users: usersResult.rows
+      }
+    };
+    
+    // Write to file
+    fs.writeFileSync(backupPath, JSON.stringify(backupData, null, 2));
+    
+    // Close connection
+    await client.end();
     
     console.log(`Database backup completed: ${backupPath}`);
     return backupPath;
