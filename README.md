@@ -18,14 +18,14 @@ A modern, full-stack starter kit featuring Next.js 15, React 19, Tailwind CSS v4
 
 - Node.js 18+ 
 - PNPM 8+
-- PostgreSQL database
+- PostgreSQL database (Supabase, Neon, etc...)
 
 ## Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/nextjs-database-starter-kit.git
+git clone https://github.com/rmncldyo/nextjs-database-starter-kit.git
 cd nextjs-database-starter-kit
 ```
 
@@ -62,18 +62,6 @@ pnpm dev
 ```
 
 Visit http://localhost:3000 to see your application.
-
-## Project Structure
-
-```
-├── app/                # Next.js App Router files
-├── components/         # UI components
-├── lib/                # Utility functions and shared logic
-│   ├── db/             # Database configuration and schema
-│   └── utils/          # Helper utilities
-├── public/             # Static assets
-└── drizzle/            # Database migrations
-```
 
 ## Database Usage
 
