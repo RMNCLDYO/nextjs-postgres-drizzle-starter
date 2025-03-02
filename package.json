@@ -17,11 +17,12 @@
     "db:check": "npx drizzle-kit check",
     "db:up": "npx drizzle-kit up",
     "db:seed": "npx tsx lib/db/seed.ts",
-    "db:reset": "npx drizzle-kit drop && npx drizzle-kit push && npx tsx lib/db/seed.ts",
+    "db:clear": "npx tsx lib/db/clear.ts",
+    "db:reset": "npx tsx lib/db/clear.ts && npx drizzle-kit push && npx tsx lib/db/seed.ts",
     "db:push:dev": "NODE_ENV=development npx drizzle-kit push",
     "db:push:prod": "NODE_ENV=production npx drizzle-kit push",
     "db:backup": "npx tsx lib/db/backup.ts",
-    "db:types": "npx drizzle-kit generate:pg-types"
+    "db:types": "npx tsx -e \"console.log('Generating types from schema...')\" && npx drizzle-kit generate --schema=./lib/db/schema.ts --dialect postgresql --out=./lib/db/migrations"
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
