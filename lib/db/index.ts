@@ -2,12 +2,17 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import { usersTable } from './schema';
+
+// Set SSL options based on environment
+const sslConfig = process.env.NODE_ENV === 'development' 
+  ? { rejectUnauthorized: false } // Development mode: accept self-signed certs
+  : true; // Production mode: require valid certificates
   
 // You can specify any property from the node-postgres connection options
 const db = drizzle({ 
   connection: { 
     connectionString: process.env.DATABASE_URL!,
-    ssl: true
+    ssl: sslConfig
   }
 });
 
