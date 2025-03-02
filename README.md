@@ -2,6 +2,22 @@
 
 A modern, full-stack starter kit featuring Next.js 15, React 19, Tailwind CSS v4, and Drizzle ORM with PostgreSQL. Includes pre-configured database migrations, Biome for code quality, and shadcn/ui components for rapid UI development.
 
+## Template Status
+
+This is a starter template providing the foundational structure and configuration. It includes:
+
+- ✅ Complete project structure and configuration
+- ✅ Database schema and migration setup
+- ✅ Styling system with theme configuration
+- ✅ Code quality tools integration
+
+Developers will need to implement:
+
+- 🔄 UI components using the shadcn/ui system
+- 🔄 Database interaction from the UI
+- 🔄 API routes or server actions
+- 🔄 Authentication and authorization
+
 ## Features
 
 - 🚀 **Next.js 15** with App Router and Server Components
@@ -44,6 +60,8 @@ Create a `.env` file in the root of your project:
 DATABASE_URL=postgresql://username:password@localhost:5432/your_database
 ```
 
+**Note:** SSL is enabled by default for database connections. If you're using a local development database without SSL, you'll need to modify `lib/db/index.ts` to disable SSL.
+
 ### 4. Set up your database
 
 ```bash
@@ -63,9 +81,39 @@ pnpm dev
 
 Visit http://localhost:3000 to see your application.
 
+## Project Structure
+
+```
+├── app/                # Next.js App Router files
+│   ├── page.tsx        # Main landing page
+│   ├── layout.tsx      # Root layout with font configuration
+│   └── globals.css     # Global styles with Tailwind v4 config
+├── lib/                # Utility functions and shared logic
+│   ├── db/             # Database configuration and schema
+│   │   ├── index.ts    # Database connection and CRUD setup
+│   │   ├── schema.ts   # Table definitions and relationships
+│   │   └── migrations/ # Generated SQL migrations
+│   └── utils.ts        # Helper utilities for styling
+├── public/             # Static assets
+├── components/         # (To be implemented) UI components
+├── drizzle.config.ts   # Drizzle ORM configuration
+├── biome.json          # Biome formatter and linter config
+└── components.json     # shadcn/ui components configuration
+```
+
 ## Database Usage
 
-This starter uses Drizzle ORM with PostgreSQL. The database schema is defined in `lib/db/schema.ts`.
+This starter uses Drizzle ORM with PostgreSQL. The database schema is defined in `lib/db/schema.ts` with the following structure:
+
+```typescript
+// Current schema: Users table
+export const usersTable = pgTable("users", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull(),
+  age: integer().notNull(),
+  email: varchar({ length: 255 }).notNull().unique(),
+});
+```
 
 ### Database Commands
 
@@ -82,6 +130,31 @@ pnpm db:migrate
 # Start Drizzle Studio to manage your database
 pnpm db:studio
 ```
+
+## Adding UI Components
+
+This starter kit is configured for use with shadcn/ui components. To add a component:
+
+1. Use the shadcn/ui CLI (recommended to install it globally):
+   ```bash
+   npm install -g shadcn-ui@latest
+   ```
+
+2. Add components to your project:
+   ```bash
+   npx shadcn-ui@latest add button
+   npx shadcn-ui@latest add card
+   # etc.
+   ```
+
+3. Components will be added to the `components/ui` directory automatically.
+
+4. Import and use them in your pages:
+   ```tsx
+   import { Button } from "@/components/ui/button";
+   ```
+
+Visit [shadcn/ui documentation](https://ui.shadcn.com/docs) for more details.
 
 ## Available Scripts
 
