@@ -10,6 +10,7 @@ This is a starter template providing the foundational structure and configuratio
 - ✅ Database schema and migration setup
 - ✅ Styling system with theme configuration
 - ✅ Code quality tools integration
+- ✅ Comprehensive database management tools
 
 Developers will need to implement:
 
@@ -29,6 +30,7 @@ Developers will need to implement:
 - 🔍 **Biome** for consistent code formatting and linting
 - 🌓 **Dark Mode** support with a beautiful color system
 - 📱 **Responsive Design** out of the box
+- 🛠️ **Complete Database Tooling** for development, testing, and production
 
 ## Prerequisites
 
@@ -53,14 +55,19 @@ pnpm install
 
 ### 3. Set up environment variables
 
-Create a `.env` file in the root of your project:
+Create a `.env` file in the root of your project based on the provided `example.env`:
 
 ```
-# Database
-DATABASE_URL=postgresql://username:password@localhost:5432/your_database
+# PostgreSQL Database Configuration
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+
+# Node Environment (development, production, test)
+NODE_ENV=development
 ```
 
-**Note:** SSL is enabled by default for database connections. If you're using a local development database without SSL, you'll need to modify `lib/db/index.ts` to disable SSL.
+**Note:** SSL configuration is handled automatically based on your environment:
+- In development (`NODE_ENV=development`), self-signed certificates are accepted
+- In production (`NODE_ENV=production`), strict certificate validation is enforced
 
 ### 4. Set up your database
 
@@ -68,9 +75,11 @@ DATABASE_URL=postgresql://username:password@localhost:5432/your_database
 # Push the schema to your database
 pnpm db:push
 
-# Or if you want to generate migrations
-pnpm db:generate
-pnpm db:migrate
+# Seed with initial data
+pnpm db:seed
+
+# Or for a full setup (schema + seed data)
+pnpm db:reset
 ```
 
 ### 5. Start the development server
@@ -90,12 +99,17 @@ Visit http://localhost:3000 to see your application.
 │   └── globals.css     # Global styles with Tailwind v4 config
 ├── lib/                # Utility functions and shared logic
 │   ├── db/             # Database configuration and schema
-│   │   ├── index.ts    # Database connection and CRUD setup
+│   │   ├── index.ts    # Database connection setup
 │   │   ├── schema.ts   # Table definitions and relationships
+│   │   ├── migrate.ts  # Migration script
+│   │   ├── seed.ts     # Database seeding
+│   │   ├── clear.ts    # Complete database reset
+│   │   ├── backup.ts   # Database backup utility
 │   │   └── migrations/ # Generated SQL migrations
 │   └── utils.ts        # Helper utilities for styling
 ├── public/             # Static assets
 ├── components/         # (To be implemented) UI components
+├── backups/            # Database backups (git-ignored)
 ├── drizzle.config.ts   # Drizzle ORM configuration
 ├── biome.json          # Biome formatter and linter config
 └── components.json     # shadcn/ui components configuration
@@ -117,18 +131,28 @@ export const usersTable = pgTable("users", {
 
 ### Database Commands
 
+The kit includes a comprehensive set of database management commands:
+
 ```bash
-# Push schema changes directly to the database
-pnpm db:push
+# Schema Management
+pnpm db:push         # Push schema changes directly to the database
+pnpm db:generate     # Generate a new migration
+pnpm db:migrate      # Apply migrations
+pnpm db:studio       # Start Drizzle Studio to manage your database
+pnpm db:check        # Check for schema changes without applying them
+pnpm db:pull         # Pull schema from an existing database
+pnpm db:up           # Apply pending migrations up to a specific version
 
-# Generate a new migration
-pnpm db:generate
+# Environment-specific Operations
+pnpm db:push:dev     # Push schema with development environment settings
+pnpm db:push:prod    # Push schema with production environment settings
 
-# Apply migrations
-pnpm db:migrate
-
-# Start Drizzle Studio to manage your database
-pnpm db:studio
+# Data Management
+pnpm db:seed         # Populate database with initial sample data
+pnpm db:clear        # Reset database by dropping all tables, views, functions, etc.
+pnpm db:reset        # Clear database and reseed with fresh data
+pnpm db:backup       # Create a JSON backup of database data
+pnpm db:types        # Generate TypeScript types from database schema
 ```
 
 ## Adding UI Components
@@ -161,7 +185,9 @@ Visit [shadcn/ui documentation](https://ui.shadcn.com/docs) for more details.
 - `pnpm dev` - Start the development server with Turbopack
 - `pnpm build` - Build the application for production
 - `pnpm start` - Start the production server
-- `pnpm lint` - Lint the codebase using Biome
+- `pnpm lint` - Lint and format the codebase using Biome
+- `pnpm lint:fix` - Fix linting issues automatically
+- `pnpm format` - Format code using Biome
 
 ## Styling
 
