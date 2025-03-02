@@ -6,10 +6,15 @@ import { usersTable } from './schema';
 async function seedDatabase() {
   console.log('Seeding database...');
 
+  // Set SSL options based on environment
+  const sslConfig = process.env.NODE_ENV === 'development' 
+    ? { rejectUnauthorized: false } // Development mode: accept self-signed certs
+    : true; // Production mode: require valid certificates
+
   // Create a client
   const client = new Client({
     connectionString: process.env.DATABASE_URL!,
-    ssl: true
+    ssl: sslConfig
   });
 
   // Connect to the database
