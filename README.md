@@ -1,4 +1,4 @@
-# NextJS Database Starter Kit
+# NextJS Postgres/Drizzle Starter
 
 A modern, full-stack starter kit featuring Next.js 15, React 19, Tailwind CSS v4, and Drizzle ORM with PostgreSQL. Includes pre-configured database migrations, Biome for code quality, and shadcn/ui components for rapid UI development.
 
@@ -43,8 +43,8 @@ Developers will need to implement:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/rmncldyo/nextjs-database-starter-kit.git
-cd nextjs-database-starter-kit
+git clone https://github.com/rmncldyo/nextjs-postgres-drizzle-starter.git
+cd nextjs-postgres-drizzle-starter
 ```
 
 ### 2. Install dependencies
